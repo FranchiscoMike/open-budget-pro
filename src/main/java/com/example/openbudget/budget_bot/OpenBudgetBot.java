@@ -61,6 +61,31 @@ public class OpenBudgetBot extends TelegramLongPollingBot {
                     execute(service.start(update));
                 } else {
                     BotUser currentUser = service.findCurrentUser(update);
+
+
+                    String status = currentUser.getStatus();
+
+                    switch (status) {
+                        case BotState.SELECT_PROJECT -> {
+
+                        }
+
+                        case BotState.ASK_QUESTION -> {
+
+                        }
+
+                        case BotState.SHARE_PHONE -> {
+
+                        }
+                        case BotState.RESULT -> {
+
+                        }
+                        default -> {
+                        }
+
+
+                    }
+
                     if (currentUser.getStatus().equals(BotState.SELECT_PROJECT)) {
                         execute(service.chooseProject(currentUser, update));
                     }
