@@ -11,6 +11,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.ActionType;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -53,32 +54,26 @@ public class OpenBudgetBot extends TelegramLongPollingBot {
             action.setChatId(message.getChatId().toString());
             execute(action);
 
+            BotUser currentUser = service.findCurrentUser(update);
 
             if (message.hasText()) {
                 String text = message.getText();
-                String chatId = message.getChatId().toString();
                 if (text.equals("/start")) {
-                    execute(service.start(update));
+                    execute(service.start(currentUser));
                 } else {
-                    BotUser currentUser = service.findCurrentUser(update);
 
 
                     String status = currentUser.getStatus();
 
                     switch (status) {
-                        case BotState.SELECT_PROJECT -> {
-
+                        case BotState.ASK_QUESTION -> { // asking YES or NO
+                            execute(service.ask_qiestion(currentUser,text));
                         }
-
-                        case BotState.ASK_QUESTION -> {
-
-                        }
-
                         case BotState.SHARE_PHONE -> {
-
+                            execute(service.asking_code(currentUser,update));
                         }
                         case BotState.RESULT -> {
-
+                            execute(service.result(currentUser,text));
                         }
                         default -> {
                         }
@@ -90,7 +85,23 @@ public class OpenBudgetBot extends TelegramLongPollingBot {
                         execute(service.chooseProject(currentUser, update));
                     }
                 }
+            } else if (message.hasContact()){
+                if (currentUser.getStatus().equals(BotState.SHARE_PHONE)) {
+                    execute(service.asking_code(currentUser, update));
+                } else {
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(currentUser.getChatId());
+                    sendMessage.setText("Something went wrong!");
+                    execute(sendMessage);
+                }
             }
+        } else if (update.hasCallbackQuery()) {
+            BotUser currentUser = service.findCurrentUser(update);
+            CallbackQuery callbackQuery = update.getCallbackQuery();
+            int data = Integer.parseInt(callbackQuery.getData());
+
+            // doim bunda project name keladi :
+            execute(service.showProject(currentUser,data));
         }
     }
 }

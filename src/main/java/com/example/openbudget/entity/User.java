@@ -22,6 +22,7 @@ public class User {
     private Project project;
     private boolean isDone;
     private String phoneNumber;
+    private String code;
     @CreationTimestamp
     private Timestamp createdAt;
 }
