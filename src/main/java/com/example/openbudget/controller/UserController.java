@@ -45,4 +45,14 @@ public class UserController {
 
 
 
+    /**
+     * all new registered users
+     * @return
+     */
+    @GetMapping("/verified_users")
+    private HttpEntity<?> findAllVerifiedUsers(){
+        ApiResponse all = userService.findAllVerifiedUsers();
+        return ResponseEntity.status(200).body(all);
+    }
+
 }

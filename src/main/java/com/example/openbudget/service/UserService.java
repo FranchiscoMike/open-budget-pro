@@ -28,7 +28,7 @@ public class UserService {
     }
 
     public ApiResponse findNewUsers() {
-        Iterator<User> allByDoneFalse = userRepository.findAllByDoneFalse();
+        List<User> allByDoneFalse = userRepository.findAllByDoneFalse();
         return  new ApiResponse(true,"All new Users",allByDoneFalse);
     }
 
@@ -50,5 +50,12 @@ public class UserService {
 
         return new ApiResponse(true,"message is sent");
 
+    }
+
+    public ApiResponse findAllVerifiedUsers() {
+
+        List<User> allByDoneTrueAndPaidFalse = userRepository.findAllByDoneTrueAndPaidFalse();
+
+        return new ApiResponse(true,"all",allByDoneTrueAndPaidFalse);
     }
 }

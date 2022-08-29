@@ -270,6 +270,7 @@ public class BotService {
 
             sendMessage.setText("please wait till get message to your phone!");
 
+            sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
 
         } else {
 

@@ -17,6 +17,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByPhoneNumber(String phoneNumber);
 
 //    List<User> findAllByPhoneNumberAndCode(String phone,String code);
-    Iterator<User> findAllByDoneFalse();
-//    List<User> findAllByDoneIsTrue();
+    List<User> findAllByDoneFalse();
+    List<User> findAllByDoneTrueAndPaidFalse();
 }

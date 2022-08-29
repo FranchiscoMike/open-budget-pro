@@ -21,7 +21,7 @@ public class User {
     @ManyToOne
     private Project project;
     private boolean done;
-    private boolean Paid;
+    private boolean paid;
     private String phoneNumber;
     private String code;
     @CreationTimestamp
