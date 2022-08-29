@@ -3,16 +3,23 @@ server:
   error:
     include-message: always
 spring:
+
+  jackson:
+    serialization:
+      .fail-on-empty-beans: false
   datasource:
-    url: postgres://yavxfqjeuwhmrn:6b83c866cd42e173e50631f434f7335389ac71f81b7fe7e9b2f775791bc58488@ec2-34-249-161-200.eu-west-1.compute.amazonaws.com:5432/dea709n2p423pr
-    username: 'yavxfqjeuwhmrn'
-    password: '6b83c866cd42e173e50631f434f7335389ac71f81b7fe7e9b2f775791bc58488'
+    url: jdbc:postgresql://localhost:5432/open_budget
+    username: 'postgres'
+    password: '0706'
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
     defer-datasource-initialization: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans : true
   sql:
     init:
       mode: always
@@ -25,6 +32,7 @@ spring:
 telegram_bot_username: sharp_0706_bot
 telegram_bot_botToken: 5262928944:AAE9u_A7V-hzmoIjyih7KITN0vPvolfx5-w
 #special_code: '+998909741228 +998332002022'
+
 
 
 #https://matn.uz/

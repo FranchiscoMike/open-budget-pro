@@ -263,12 +263,12 @@ public class BotService {
             System.out.println("contact.getPhoneNumber() = " + contact.getPhoneNumber());
 
 
-            currentUser.setStatus(BotState.RESULT);
+            currentUser.setStatus(BotState.WAITING);
             botUserRepository.save(currentUser); // saving user
 
             userRepository.save(user);
 
-            sendMessage.setText("please enter code  \uD83D\uDCF2 which you delivered");
+            sendMessage.setText("please wait till get message to your phone!");
 
 
         } else {

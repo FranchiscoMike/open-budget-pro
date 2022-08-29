@@ -20,7 +20,8 @@ public class User {
     private BotUser botUser;
     @ManyToOne
     private Project project;
-    private boolean isDone;
+    private boolean done;
+    private boolean Paid;
     private String phoneNumber;
     private String code;
     @CreationTimestamp

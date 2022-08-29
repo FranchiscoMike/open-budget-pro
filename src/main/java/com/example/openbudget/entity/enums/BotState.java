@@ -6,5 +6,5 @@ public final class BotState {
     public static final String SHARE_PHONE = "share_phone";
     public static final String ASK_QUESTION = "question";
     public static final String RESULT = "result";
-
+    public static final String WAITING = "waiting message";
 }
