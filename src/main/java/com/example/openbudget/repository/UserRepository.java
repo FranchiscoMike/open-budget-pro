@@ -16,7 +16,18 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByBotUser_ChatId(String chatId);
     Optional<User> findByPhoneNumber(String phoneNumber);
 
-//    List<User> findAllByPhoneNumberAndCode(String phone,String code);
-    List<User> findAllByDoneFalse();
-    List<User> findAllByDoneTrueAndPaidFalse();
+    /**
+     * all new registered users
+     */
+    List<User> findAllByCodeSentFalse();
+
+    /**
+     * all identified users
+     */
+    List<User> findAllByCodeSentTrueAndPaidFalse();
+
+    /**
+     * all paid users
+     */
+    List<User> findAllByPaidTrue();
 }

@@ -28,8 +28,8 @@ public class UserService {
     }
 
     public ApiResponse findNewUsers() {
-        List<User> allByDoneFalse = userRepository.findAllByDoneFalse();
-        return  new ApiResponse(true,"All new Users",allByDoneFalse);
+        List<User> allByDoneFalse = userRepository.findAllByCodeSentFalse();
+        return new ApiResponse(true, "All new registered Users", allByDoneFalse);
     }
 
     @SneakyThrows
@@ -39,7 +39,7 @@ public class UserService {
 
         System.out.println("byPhoneNumber = " + byPhoneNumber);
 
-       User user =  byPhoneNumber.get();
+        User user = byPhoneNumber.get();
 
         SendMessage sendMessage = new SendMessage();
 
@@ -48,14 +48,25 @@ public class UserService {
 
         openBudgetBot.execute(sendMessage);
 
-        return new ApiResponse(true,"message is sent");
+        return new ApiResponse(true, "message is sent");
 
     }
 
     public ApiResponse findAllVerifiedUsers() {
 
-        List<User> allByDoneTrueAndPaidFalse = userRepository.findAllByDoneTrueAndPaidFalse();
+        List<User> allByDoneTrueAndPaidFalse = userRepository.findAllByCodeSentTrueAndPaidFalse();
 
-        return new ApiResponse(true,"all",allByDoneTrueAndPaidFalse);
+        return new ApiResponse(true, "all", allByDoneTrueAndPaidFalse);
+    }
+
+    public ApiResponse paid_users() {
+
+        List<User> allByPaidTrue = userRepository.findAllByPaidTrue();
+
+        return new ApiResponse(true, "All paid users", allByPaidTrue);
+    }
+
+    public ApiResponse findOne(Integer id) {
+        return new ApiResponse(true,"user found",userRepository.findById(id).get());
     }
 }
