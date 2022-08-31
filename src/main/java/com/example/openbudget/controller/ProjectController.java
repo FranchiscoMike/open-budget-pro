@@ -6,10 +6,7 @@ import com.example.openbudget.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,4 +20,14 @@ public class ProjectController {
        ApiResponse create = projectService.create(dto);
        return ResponseEntity.status(create.isSuccess() ? 201 : 409).body(create);
     }
+
+    @GetMapping()
+    private HttpEntity<?> all(){
+        ApiResponse all = projectService.all();
+        return ResponseEntity.status(all.isSuccess() ? 201 : 409).body(all);
+    }
+
+
+
+
 }

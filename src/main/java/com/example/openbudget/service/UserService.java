@@ -44,6 +44,8 @@ public class UserService {
         SendMessage sendMessage = new SendMessage();
 
         sendMessage.setChatId(user.getBotUser().getChatId());
+        user.setCodeSent(true);
+        userRepository.save(user);
         sendMessage.setText("Send code please!");
 
         openBudgetBot.execute(sendMessage);

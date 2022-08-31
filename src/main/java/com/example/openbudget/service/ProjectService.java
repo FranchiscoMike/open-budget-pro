@@ -17,7 +17,7 @@ public class ProjectService {
     private final ProjetRepository repository;
 
     public ApiResponse create(ProjectDTO dto) {
-       boolean  optional = repository.existsByTitleId(dto.getTitle_id());
+        boolean optional = repository.existsByTitleId(dto.getTitle_id());
         if (!optional) {
             Project project = new Project();
 
@@ -30,5 +30,10 @@ public class ProjectService {
             return new ApiResponse(true, "done", save);
         }
         return new ApiResponse(false, "already exists");
+    }
+
+    public ApiResponse all() {
+        List<Project> all = repository.findAll();
+        return new ApiResponse(true, "All projects", all);
     }
 }

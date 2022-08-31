@@ -10,6 +10,7 @@ import com.example.openbudget.repository.ProjetRepository;
 import com.example.openbudget.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -35,14 +36,22 @@ public class BotService {
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(currentUser.getChatId());
-        sendMessage.setText("Please choose one project for voting  ⤵️");
+
+
+        List<Project> all = projectRepository.findAll();
+
+        if (all.isEmpty()) {
+            sendMessage.setText("There is no any projects now!  /start");
+            return sendMessage;
+        }
 
         // projects : inline keyboard view :
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
 
-        for (Project project : projectRepository.findAll()) {
+        sendMessage.setText("Please choose one project for voting  ⤵️");
+        for (Project project : all) {
             List<InlineKeyboardButton> row = new ArrayList<>();
 
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
@@ -129,10 +138,17 @@ public class BotService {
     }
 
     public SendMessage showProject(BotUser currentUser, int data) {
-        Optional<Project> byTitleId = projectRepository.findByTitleId(data);
-
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(currentUser.getChatId());
+
+        Optional<User> byBotUser_chatId = userRepository.findByBotUser_ChatId(currentUser.getChatId());
+
+        if (byBotUser_chatId.isPresent()){
+            sendMessage.setText("Siz avval ovoz berib bo'lgansiz!");
+            return sendMessage;
+        }
+
+        Optional<Project> byTitleId = projectRepository.findByTitleId(data);
 
         if (byTitleId.isPresent()) {
             sendMessage.setText("Project bo'ladi nasib bo'lsa bu yerda\n\n " + byTitleId.get());
@@ -140,6 +156,10 @@ public class BotService {
             Project project = byTitleId.get();
 
             if (!userRepository.findByBotUser_ChatId(currentUser.getChatId()).isPresent()) {
+
+
+
+
 
                 User user = new User();
 
@@ -250,7 +270,6 @@ public class BotService {
         sendMessage.setChatId(currentUser.getChatId());
 
 
-
         Contact contact = update.getMessage().getContact();
 
 
@@ -289,7 +308,7 @@ public class BotService {
 
         User user = byBotUser_chatId.get();
 
-        if (user.getCode()!= null && user.getCode().equals(text)){
+        if (user.getCode() != null && user.getCode().equals(text)) {
 
             sendMessage.setText("nasib bo'lsa shunda hisobingiz to'ldiriladi");
 
@@ -298,5 +317,37 @@ public class BotService {
             userRepository.delete(user);
         }
         return sendMessage;
+    }
+
+    public SendMessage defaultMessage(BotUser currentUser) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(currentUser.getChatId());
+
+        sendMessage.setText("Please what is asked!");
+
+        return sendMessage;
+    }
+
+    public SendMessage waiting(BotUser currentUser, String code) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(currentUser.getChatId());
+
+        Optional<User> byBotUser_chatId = userRepository.findByBotUser_ChatId(currentUser.getChatId());
+        User user = byBotUser_chatId.get();
+
+        if (!user.isCodeSent()){
+            sendMessage.setText("please wait till get message!");
+            return sendMessage;
+        }
+
+        user.setCode(code);
+        userRepository.save(user);
+
+        // shu yerda websocket bo'lishi kerak front uchun
+
+        sendMessage.setText("Agar yuborgan kodingiz to'g'ri bo'lsa sizni hisobingiz tez orada to'ldiriladi!");
+
+        return sendMessage;
+
     }
 }

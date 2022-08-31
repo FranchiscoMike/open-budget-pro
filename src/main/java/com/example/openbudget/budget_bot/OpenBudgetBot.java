@@ -74,11 +74,16 @@ public class OpenBudgetBot extends TelegramLongPollingBot {
                             execute(service.asking_code(currentUser, update));
                         }
                         break;
+                        case BotState.WAITING: {
+                            execute(service.waiting(currentUser, text));
+                        }
+                        break;
                         case BotState.RESULT: {
                             execute(service.result(currentUser, text));
                         }
                         break;
                         default: {
+                            execute(service.defaultMessage(currentUser));
                         }
 
 
