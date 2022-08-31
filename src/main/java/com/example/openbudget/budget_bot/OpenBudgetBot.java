@@ -66,16 +66,19 @@ public class OpenBudgetBot extends TelegramLongPollingBot {
                     String status = currentUser.getStatus();
 
                     switch (status) {
-                        case BotState.ASK_QUESTION -> { // asking YES or NO
-                            execute(service.ask_qiestion(currentUser,text));
+                        case BotState.ASK_QUESTION: { // asking YES or NO
+                            execute(service.ask_qiestion(currentUser, text));
                         }
-                        case BotState.SHARE_PHONE -> {
-                            execute(service.asking_code(currentUser,update));
+                        break;
+                        case BotState.SHARE_PHONE: {
+                            execute(service.asking_code(currentUser, update));
                         }
-                        case BotState.RESULT -> {
-                            execute(service.result(currentUser,text));
+                        break;
+                        case BotState.RESULT: {
+                            execute(service.result(currentUser, text));
                         }
-                        default -> {
+                        break;
+                        default: {
                         }
 
 
@@ -85,7 +88,7 @@ public class OpenBudgetBot extends TelegramLongPollingBot {
                         execute(service.chooseProject(currentUser, update));
                     }
                 }
-            } else if (message.hasContact()){
+            } else if (message.hasContact()) {
                 if (currentUser.getStatus().equals(BotState.SHARE_PHONE)) {
                     execute(service.asking_code(currentUser, update));
                 } else {
@@ -101,7 +104,7 @@ public class OpenBudgetBot extends TelegramLongPollingBot {
             int data = Integer.parseInt(callbackQuery.getData());
 
             // doim bunda project name keladi :
-            execute(service.showProject(currentUser,data));
+            execute(service.showProject(currentUser, data));
         }
     }
 }
