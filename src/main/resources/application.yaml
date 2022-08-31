@@ -4,9 +4,9 @@ server:
     include-message: always
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/open_budget
-    username: 'postgres'
-    password: '0706'
+    url: postgres://ffhlaxqyjdljsk:4cc497de2fb1b399d475116bd342651ce041e9c622b197ec2c25338b3fc628b1@ec2-52-212-228-71.eu-west-1.compute.amazonaws.com:5432/d661kh7qbtq4ad
+    username: ffhlaxqyjdljsk
+    password: 4cc497de2fb1b399d475116bd342651ce041e9c622b197ec2c25338b3fc628b1
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
