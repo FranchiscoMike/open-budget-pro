@@ -1,10 +1,8 @@
 package com.example.openbudget.controller;
 
 import com.example.openbudget.dto.ApiResponse;
-import com.example.openbudget.dto.ProjectDTO;
 import com.example.openbudget.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +69,42 @@ public class UserController {
     private HttpEntity<?> askingCode(@PathVariable("phone") String phone){
         ApiResponse askingCode = userService.askingCode(phone);
         return ResponseEntity.status(200).body(askingCode);
+    }
+
+    /**
+     * verify user
+     */
+    @PostMapping("/verify/{phone}")
+    private HttpEntity<?> verify_user(@PathVariable("phone") String phone){
+        ApiResponse verify_user = userService.verify_user(phone);
+        return ResponseEntity.status(200).body(verify_user);
+    }
+
+    /**
+     * resend code
+     */
+    @PostMapping("/resend_code/{phone}")
+    private HttpEntity<?> resend_code(@PathVariable("phone") String phone){
+        ApiResponse resend_code = userService.resend_code(phone);
+        return ResponseEntity.status(200).body(resend_code);
+    }
+
+    /**
+     * code is not received
+     */
+    @PostMapping("/code_not_received/{phone}")
+    private HttpEntity<?> code_not_received(@PathVariable("phone") String phone){
+        ApiResponse code_not_received = userService.code_not_received(phone);
+        return ResponseEntity.status(200).body(code_not_received);
+    }
+
+    /**
+     * user is paid successfully
+     */
+    @PostMapping("/user_is_paid/{phone}")
+    private HttpEntity<?> user_is_paid(@PathVariable("phone") String phone){
+        ApiResponse user_is_paid = userService.user_is_paid(phone);
+        return ResponseEntity.status(200).body(user_is_paid);
     }
 
 

@@ -21,6 +21,7 @@ public class User {
     @ManyToOne
     private Project project;
     private boolean codeSent; // agar unga code yuborilgangan bo'lsa true bo'ladi
+    private boolean verified; // agar codi to'g'ri bo'lsa verify bo'ladi
     private boolean paid;  // agar unga pay qilinsa true bo'ladi
     private String phoneNumber;
     private String code;

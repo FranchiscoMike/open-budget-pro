@@ -9,13 +9,13 @@ server:
       password: 4cc497de2fb1b399d475116bd342651ce041e9c622b197ec2c25338b3fc628b1
       driver-class-name: org.postgresql.Driver
   jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
+   show-sql: true
+   hibernate:
+    ddl-auto: update
     defer-datasource-initialization: true
-    properties:
-      hibernate:
-        enable_lazy_load_no_trans: true
+  properties:
+    hibernate:
+      enable_lazy_load_no_trans: true
   sql:
     init:
       mode: always
@@ -28,7 +28,8 @@ springdoc:
     path: /swagger-ui.html
 
 telegram_bot_username: sharp_0706_bot
-telegram_bot_botToken: 5262928944:AAE9u_A7V-hzmoIjyih7KITN0vPvolfx5-w
+telegram_bot_botToken: 5262928944:AAE9u_A7V-hzmoIjyih7KITN0vPvolfx5-wI
+
 #special_code: '+998909741228 +998332002022'
 
 

@@ -69,6 +69,85 @@ public class UserService {
     }
 
     public ApiResponse findOne(Integer id) {
-        return new ApiResponse(true,"user found",userRepository.findById(id).get());
+        return new ApiResponse(true, "user found", userRepository.findById(id).get());
+    }
+
+    @SneakyThrows
+    public ApiResponse verify_user(String phone) {
+        Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phone);
+
+        System.out.println("byPhoneNumber = " + byPhoneNumber);
+
+        User user = byPhoneNumber.get();
+
+        SendMessage sendMessage = new SendMessage();
+
+        sendMessage.setChatId(user.getBotUser().getChatId());
+        user.setVerified(true);
+        userRepository.save(user);
+        sendMessage.setText("Your code is verified your account will be replenished shortly ");
+
+        openBudgetBot.execute(sendMessage);
+
+        return new ApiResponse(true, "message is sent");
+    }
+@SneakyThrows
+    public ApiResponse resend_code(String phone) {
+        Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phone);
+
+        System.out.println("byPhoneNumber = " + byPhoneNumber);
+
+        User user = byPhoneNumber.get();
+
+        SendMessage sendMessage = new SendMessage();
+
+        sendMessage.setChatId(user.getBotUser().getChatId());
+        user.setVerified(false);
+        userRepository.save(user);
+        sendMessage.setText("Your code is not verified \n\n" +
+                "please resend your code!");
+
+        openBudgetBot.execute(sendMessage);
+
+        return new ApiResponse(true, "message is sent to user :) " + user.getPhoneNumber());
+    }
+@SneakyThrows
+    public ApiResponse code_not_received(String phone) {
+        Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phone);
+
+        System.out.println("byPhoneNumber = " + byPhoneNumber);
+
+        User user = byPhoneNumber.get();
+
+        SendMessage sendMessage = new SendMessage();
+
+        sendMessage.setChatId(user.getBotUser().getChatId());
+        user.setVerified(false);
+        userRepository.save(user);
+        sendMessage.setText("You haven't sent code on time please try again /start");
+
+        openBudgetBot.execute(sendMessage);
+
+        return new ApiResponse(true, "message is sent to user :) " + user.getPhoneNumber());
+    }
+@SneakyThrows
+    public ApiResponse user_is_paid(String phone) {
+        Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phone);
+
+        System.out.println("byPhoneNumber = " + byPhoneNumber);
+
+        User user = byPhoneNumber.get();
+
+        SendMessage sendMessage = new SendMessage();
+
+        sendMessage.setChatId(user.getBotUser().getChatId());
+        user.setPaid(true);
+        userRepository.save(user);
+        sendMessage.setText("Hisobingiz to'ldirildi!");
+
+        openBudgetBot.execute(sendMessage);
+
+        return new ApiResponse(true, "message is sent to user :) " + user.getPhoneNumber());
+
     }
 }
