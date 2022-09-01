@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
   error:
     include-message: always
 spring:
@@ -8,14 +8,11 @@ spring:
     username: fsstysxhtvsebp
     password: ed852796c00f650bf533d2b3aad378408ba525c7a35eab51b91047600aa5e3cd
     driver-class-name: org.postgresql.Driver
-jpa:
-  show-sql: true
-  hibernate:
-    ddl-auto: create
-    defer-datasource-initialization: true
-  properties:
+  jpa:
+    show-sql: true
     hibernate:
-      enable_lazy_load_no_trans: true
+      ddl-auto: create
+    defer-datasource-initialization: true
   sql:
     init:
       mode: always
@@ -25,7 +22,7 @@ jpa:
       max-file-size: 20MB
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
+    path: /docs
 
 telegram_bot_username: sharp_0706_bot
 telegram_bot_botToken: 5262928944:AAE9u_A7V-hzmoIjyih7KITN0vPvolfx5-w
