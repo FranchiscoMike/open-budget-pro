@@ -4,9 +4,9 @@ server:
     include-message: always
 spring:
   datasource:
-    url: postgres://ffhlaxqyjdljsk:4cc497de2fb1b399d475116bd342651ce041e9c622b197ec2c25338b3fc628b1@ec2-52-212-228-71.eu-west-1.compute.amazonaws.com:5432/d661kh7qbtq4ad
-    username: ffhlaxqyjdljsk
-    password: 4cc497de2fb1b399d475116bd342651ce041e9c622b197ec2c25338b3fc628b1
+    url: postgres://fsstysxhtvsebp:ed852796c00f650bf533d2b3aad378408ba525c7a35eab51b91047600aa5e3cd@ec2-54-75-26-218.eu-west-1.compute.amazonaws.com:5432/da5v6ra9jhk40g
+    username: fsstysxhtvsebp
+    password: ed852796c00f650bf533d2b3aad378408ba525c7a35eab51b91047600aa5e3cd
     driver-class-name: org.postgresql.Driver
 jpa:
   show-sql: true
