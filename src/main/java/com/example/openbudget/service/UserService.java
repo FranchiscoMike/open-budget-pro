@@ -28,7 +28,7 @@ public class UserService {
     }
 
     public ApiResponse findNewUsers() {
-        List<User> allByDoneFalse = userRepository.findAllByCodeSentFalse();
+        List<User> allByDoneFalse = userRepository.findAllByVerifiedFalse();
         return new ApiResponse(true, "All new registered Users", allByDoneFalse);
     }
 
@@ -56,7 +56,7 @@ public class UserService {
 
     public ApiResponse findAllVerifiedUsers() {
 
-        List<User> allByDoneTrueAndPaidFalse = userRepository.findAllByCodeSentTrueAndPaidFalse();
+        List<User> allByDoneTrueAndPaidFalse = userRepository.findAllByVerifiedTrue();
 
         return new ApiResponse(true, "all", allByDoneTrueAndPaidFalse);
     }
@@ -122,8 +122,8 @@ public class UserService {
         SendMessage sendMessage = new SendMessage();
 
         sendMessage.setChatId(user.getBotUser().getChatId());
-        user.setVerified(false);
-        userRepository.save(user);
+
+        userRepository.delete(user);  // user is deleted there
         sendMessage.setText("You haven't sent code on time please try again /start");
 
         openBudgetBot.execute(sendMessage);

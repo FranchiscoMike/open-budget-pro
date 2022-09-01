@@ -19,12 +19,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     /**
      * all new registered users
      */
-    List<User> findAllByCodeSentFalse();
+    List<User> findAllByVerifiedFalse();
 
     /**
      * all identified users
      */
-    List<User> findAllByCodeSentTrueAndPaidFalse();
+    List<User> findAllByVerifiedTrue();
 
     /**
      * all paid users
