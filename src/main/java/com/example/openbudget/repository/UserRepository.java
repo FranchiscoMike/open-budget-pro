@@ -13,13 +13,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     void deleteByBotUser_ChatId(String chatId);
 
-    Optional<User> findByBotUser_ChatId(String chatId);
-    Optional<User> findByPhoneNumber(String phoneNumber);
+    Optional<User> findByBotUser_ChatIdAndCodeNull(String chatId);
 
     /**
      * all new registered users
      */
-    List<User> findAllByVerifiedFalse();
+    List<User> findAllByCodeSentFalse();
 
     /**
      * all identified users
@@ -30,4 +29,19 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * all paid users
      */
     List<User> findAllByPaidTrue();
+
+    /**
+     * search by phone_number
+     */
+    Optional<User> findByPhoneNumber(String phoneNumber);
+
+    /**
+     * search by phone and bot user chatId
+     */
+    Optional<User> findByPhoneNumberAndBotUser_ChatId(String phone,String chatId);
+
+    /**
+     * find new user
+     */
+    Optional<User> findByBotUser_ChatIdAndPhoneNumberNull(String chatId);
 }

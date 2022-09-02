@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class UserService {
     }
 
     public ApiResponse findNewUsers() {
-        List<User> allByDoneFalse = userRepository.findAllByVerifiedFalse();
+        List<User> allByDoneFalse = userRepository.findAllByCodeSentFalse();
         return new ApiResponse(true, "All new registered Users", allByDoneFalse);
     }
 
@@ -44,7 +45,7 @@ public class UserService {
         sendMessage.setChatId(user.getBotUser().getChatId());
         user.setCodeSent(true);
         userRepository.save(user);
-        sendMessage.setText("Qurilmangizga kod yuborildi shuni yuboring, iltimos!");
+        sendMessage.setText("Qurilmangizga kod yuborildi shuni yuboring va biz kodni tekshirgan holda sizga xabar yuboramiz!");
 
         openBudgetBot.execute(sendMessage);
 
@@ -83,13 +84,14 @@ public class UserService {
         sendMessage.setChatId(user.getBotUser().getChatId());
         user.setVerified(true);
         userRepository.save(user);
-        sendMessage.setText("Sizning kodingiz tasidiqlandi nasib bo'lsa yaqinda hisobingiz to'liriladi ");
+        sendMessage.setText("Siz yuborgan kod tasidiqlandi! Tez orada hisobingiz to'liriladi!\n" + "Ovozingiz uchun raxmat!!!\uD83D\uDE0A ");
 
         openBudgetBot.execute(sendMessage);
 
         return new ApiResponse(true, "message is sent");
     }
-@SneakyThrows
+
+    @SneakyThrows
     public ApiResponse resend_code(String phone) {
         Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phone);
 
@@ -100,17 +102,18 @@ public class UserService {
         SendMessage sendMessage = new SendMessage();
 
         sendMessage.setChatId(user.getBotUser().getChatId());
+        user.setCodeSent(false);
         user.setVerified(false);
         user.setCode("Kod hali kelmagan");
         userRepository.save(user);
-        sendMessage.setText("Sizning kodingiz hali tasdiqlanmagan \n\n" +
-                "Iltimos kodni qaytadan jo'nating!");
+        sendMessage.setText("Sizning kodingiz hali tasdiqlanmagan \n\n" + "Iltimos kodni qaytadan jo'nating!");
 
         openBudgetBot.execute(sendMessage);
 
         return new ApiResponse(true, "message is sent to user :) " + user.getPhoneNumber());
     }
-@SneakyThrows
+
+    @SneakyThrows
     public ApiResponse code_not_received(String phone) {
         Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phone);
 
@@ -129,7 +132,8 @@ public class UserService {
 
         return new ApiResponse(true, "message is sent to user :) " + user.getPhoneNumber());
     }
-@SneakyThrows
+
+    @SneakyThrows
     public ApiResponse user_is_paid(String phone) {
         Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phone);
 

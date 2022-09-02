@@ -17,18 +17,16 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping()
-    private HttpEntity<?> create(@RequestBody()ProjectDTO dto){
-       ApiResponse create = projectService.create(dto);
-       return ResponseEntity.status(create.isSuccess() ? 201 : 409).body(create);
+    private HttpEntity<?> create(@RequestBody() ProjectDTO dto) {
+        ApiResponse create = projectService.create(dto);
+        return ResponseEntity.status(create.isSuccess() ? 201 : 409).body(create);
     }
 
     @GetMapping()
-    private HttpEntity<?> all(){
+    private HttpEntity<?> all() {
         ApiResponse all = projectService.all();
         return ResponseEntity.status(all.isSuccess() ? 201 : 409).body(all);
     }
-
-
 
 
 }

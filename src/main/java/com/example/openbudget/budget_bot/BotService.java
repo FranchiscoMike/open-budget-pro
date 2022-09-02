@@ -9,10 +9,14 @@ import com.example.openbudget.repository.BotUserRepository;
 import com.example.openbudget.repository.ProjetRepository;
 import com.example.openbudget.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Contact;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -21,6 +25,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +56,7 @@ public class BotService {
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
 
-        sendMessage.setText("Please choose one project for voting  ⤵️");
+        sendMessage.setText("Iltimos, ovoz bermoqchi bo'lgan loyihangizni tanlang  ⤵️");
         for (Project project : all) {
             List<InlineKeyboardButton> row = new ArrayList<>();
 
@@ -136,45 +142,44 @@ public class BotService {
         sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
         return sendMessage;
     }
+@SneakyThrows
+    public SendPhoto showProject(BotUser currentUser, int data) {
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(currentUser.getChatId());
 
-    public SendMessage showProject(BotUser currentUser, int data) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(currentUser.getChatId());
-
-        Optional<User> byBotUser_chatId = userRepository.findByBotUser_ChatId(currentUser.getChatId());
-
-        if (byBotUser_chatId.isPresent()){
-            sendMessage.setText("Siz avval ovoz berib bo'lgansiz!");
-            return sendMessage;
-        }
+//        Optional<User> byBotUser_chatId = userRepository.findByBotUser_ChatId(currentUser.getChatId());
+//
+//        if (byBotUser_chatId.isPresent()){
+//            sendMessage.setText("Siz avval ovoz berib bo'lgansiz!");
+//            return sendMessage;
+//        }
 
         Optional<Project> byTitleId = projectRepository.findByTitleId(data);
 
         if (byTitleId.isPresent()) {
             Project projectCha = byTitleId.get();
+            sendPhoto.setProtectContent(true);
+
+            File file = new File("src/main/resources/images/img.png");
+            sendPhoto.setPhoto(new InputFile(file));
 
             String info = "";
 
-            info+=("Loyihaning nomi "+projectCha.getTitle() +"\n");
-            info+=("Loyihaning id si "+projectCha.getTitleId() +"\n");
-            sendMessage.setText(info+"\n\n" +
-                    "Siz shu lohihaga ovoz berishni istaysizmi ? Quyidagi tugmalardan birontasini tanlang");
+            info += ("Loyihaning nomi " + projectCha.getTitle() + "\n");
+            info += ("Loyihaning id si " + projectCha.getTitleId() + "\n");
+            sendPhoto.setCaption(info + "\n\n" +
+                    "Haqiqatdan ham siz ushbu loyihaga ovoz bermoqchimisiz?");
 
             Project project = byTitleId.get();
 
-            if (!userRepository.findByBotUser_ChatId(currentUser.getChatId()).isPresent()) {
-
-
-
-
-
+            // doimo userlar qatorida bo'ladi nasib bo'lsa lekin qachon xato beradi nomer jo'natmay qaytadan start bersa
                 User user = new User();
 
                 user.setBotUser(currentUser);
                 user.setProject(project);
 
                 userRepository.save(user);
-            }
+
 
             // reply
             ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -194,15 +199,13 @@ public class BotService {
 
             rowList.add(row);
             replyKeyboardMarkup.setKeyboard(rowList);
-            sendMessage.setReplyMarkup(replyKeyboardMarkup);
+            sendPhoto.setReplyMarkup(replyKeyboardMarkup);
 
             currentUser.setStatus(BotState.ASK_QUESTION);
             botUserRepository.save(currentUser); // doim save qilinadi
-        } else {
-            sendMessage.setText("Loyiha topilmadi , id noto'g'ri bo'lishi mumkin");
         }
 
-        return sendMessage;
+        return sendPhoto;
     }
 
     public SendMessage ask_qiestion(BotUser currentUser, String text) {
@@ -218,7 +221,7 @@ public class BotService {
             replyKeyboardMarkup.setResizeKeyboard(true);
             replyKeyboardMarkup.setOneTimeKeyboard(true);
             replyKeyboardMarkup.setSelective(true);
-            replyKeyboardMarkup.setInputFieldPlaceholder("Please share your phone \n\n");
+            replyKeyboardMarkup.setInputFieldPlaceholder("Raqam kiriting \n\n");
 
             List<KeyboardRow> rowList = new ArrayList<>();
             KeyboardRow row = new KeyboardRow();
@@ -274,58 +277,72 @@ public class BotService {
 
     public SendMessage asking_code(BotUser currentUser, Update update) {
 
+        Message message = update.getMessage();
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(currentUser.getChatId());
+        sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
 
+        // uodate da telefon raqam kelayapti to'g'rimi ? ha
 
-        Contact contact = update.getMessage().getContact();
-
-
-        if (contact != null) {
-            Optional<User> byBotUser_chatId = userRepository.findByBotUser_ChatId(currentUser.getChatId());
-
-            User user = byBotUser_chatId.get();
-
-            user.setPhoneNumber(contact.getPhoneNumber());
-            System.out.println("contact.getPhoneNumber() = " + contact.getPhoneNumber());
-
-
-            currentUser.setStatus(BotState.WAITING);
-            botUserRepository.save(currentUser); // saving user
-
-            userRepository.save(user);
-
-            sendMessage.setText("please wait till get message to your phone!");
-
-            sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
-
+        String phone = "";
+        if (message.hasContact()){
+            phone = message.getContact().getPhoneNumber();
+        } else if (message.hasText()) {
+            phone = message.getText();
         } else {
-
             sendMessage.setText("please enter what is asked!");
-
+            return sendMessage;
         }
 
-        return sendMessage;
-    }
+        // endi userni qidiramiza !!
 
-    public SendMessage result(BotUser currentUser, String text) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(currentUser.getChatId());
+        Optional<User> byPhoneNumber = userRepository.findByPhoneNumberAndBotUser_ChatId(phone, currentUser.getChatId());
 
-        Optional<User> byBotUser_chatId = userRepository.findByBotUser_ChatId(currentUser.getChatId());
-
-        User user = byBotUser_chatId.get();
-
-        if (user.getCode() != null && user.getCode().equals(text)) {
-
-            sendMessage.setText("nasib bo'lsa shunda hisobingiz to'ldiriladi");
-
-        } else {
-            sendMessage.setText("Nimadir noto'g'ri bo'layapti");
-            userRepository.delete(user);
+        if (byPhoneNumber.isPresent()) {
+              sendMessage.setText("Siz allaqachon ovoz berib bo'lgansiz!");
+              return sendMessage;
         }
-        return sendMessage;
+
+
+        User user = userRepository.findByBotUser_ChatIdAndPhoneNumberNull(currentUser.getChatId()).get();
+
+        user.setPhoneNumber(phone);
+        userRepository.save(user);
+
+
+        currentUser.setStatus(BotState.WAITING);
+                botUserRepository.save(currentUser); // saving user
+
+                userRepository.save(user);
+
+
+                sendMessage.setText("Sizga tez orada xabar yuborishimizni kuting\uD83D\uDE0A");
+                //sendMessage.setText("please enter what is asked!");
+
+                sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
+                return sendMessage;
+
     }
+
+//    public SendMessage result(BotUser currentUser, String text) {
+//        SendMessage sendMessage = new SendMessage();
+//        sendMessage.setChatId(currentUser.getChatId());
+//
+//        Optional<User> byBotUser_chatId = userRepository.findByBotUser_ChatId(currentUser.getChatId());
+//
+//        User user = byBotUser_chatId.get();
+//
+//        if (user.getCode() != null && user.getCode().equals(text)) {
+//
+//            sendMessage.setText("nasib bo'lsa shunda hisobingiz to'ldiriladi");
+//
+//        } else {
+//            sendMessage.setText("Nimadir noto'g'ri bo'layapti");
+//            userRepository.delete(user);
+//        }
+//        return sendMessage;
+//    }
 
     public SendMessage defaultMessage(BotUser currentUser) {
         SendMessage sendMessage = new SendMessage();
@@ -340,11 +357,11 @@ public class BotService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(currentUser.getChatId());
 
-        Optional<User> byBotUser_chatId = userRepository.findByBotUser_ChatId(currentUser.getChatId());
+        Optional<User> byBotUser_chatId = userRepository.findByBotUser_ChatIdAndCodeNull(currentUser.getChatId());
         User user = byBotUser_chatId.get();
 
-        if (!user.isCodeSent()){
-            sendMessage.setText("Xabarni olgunizgizga kutishingizga to'g'ri keladi");
+        if (!user.isCodeSent()) {
+            sendMessage.setText("Sizga tez orada xabar yuborishimizni kuting\uD83D\uDE0A");
             return sendMessage;
         }
 
