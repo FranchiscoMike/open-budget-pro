@@ -41,7 +41,7 @@ public class BotService {
         List<Project> all = projectRepository.findAll();
 
         if (all.isEmpty()) {
-            sendMessage.setText("There is no any projects now!  /start");
+            sendMessage.setText("Hozircha loyihalar mavjud emas!  /start");
             return sendMessage;
         }
 
@@ -151,7 +151,14 @@ public class BotService {
         Optional<Project> byTitleId = projectRepository.findByTitleId(data);
 
         if (byTitleId.isPresent()) {
-            sendMessage.setText("Project bo'ladi nasib bo'lsa bu yerda\n\n " + byTitleId.get());
+            Project projectCha = byTitleId.get();
+
+            String info = "";
+
+            info+=("Loyihaning nomi "+projectCha.getTitle() +"\n");
+            info+=("Loyihaning id si "+projectCha.getTitleId() +"\n");
+            sendMessage.setText(info+"\n\n" +
+                    "Siz shu lohihaga ovoz berishni istaysizmi ? Quyidagi tugmalardan birontasini tanlang");
 
             Project project = byTitleId.get();
 
@@ -192,7 +199,7 @@ public class BotService {
             currentUser.setStatus(BotState.ASK_QUESTION);
             botUserRepository.save(currentUser); // doim save qilinadi
         } else {
-            sendMessage.setText("Project not found may be deleted!");
+            sendMessage.setText("Loyiha topilmadi , id noto'g'ri bo'lishi mumkin");
         }
 
         return sendMessage;
@@ -314,7 +321,7 @@ public class BotService {
             sendMessage.setText("nasib bo'lsa shunda hisobingiz to'ldiriladi");
 
         } else {
-            sendMessage.setText("Something went wrong!");
+            sendMessage.setText("Nimadir noto'g'ri bo'layapti");
             userRepository.delete(user);
         }
         return sendMessage;
@@ -324,7 +331,7 @@ public class BotService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(currentUser.getChatId());
 
-        sendMessage.setText("Please what is asked!");
+        sendMessage.setText("ILtimos sizdan so'ralgan narsani kiriting");
 
         return sendMessage;
     }
@@ -337,7 +344,7 @@ public class BotService {
         User user = byBotUser_chatId.get();
 
         if (!user.isCodeSent()){
-            sendMessage.setText("please wait till get message!");
+            sendMessage.setText("Xabarni olgunizgizga kutishingizga to'g'ri keladi");
             return sendMessage;
         }
 
