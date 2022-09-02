@@ -24,8 +24,8 @@ springdoc:
   swagger-ui:
     path: /docs
 
-telegram_bot_username: sharp_0706_bot
-telegram_bot_botToken: 5262928944:AAE9u_A7V-hzmoIjyih7KITN0vPvolfx5-w
+telegram_bot_username: open_budget_ovoz_ber_bot
+telegram_bot_botToken: 5531876841:AAFuW0OeJ17cMrJq5GxQ0yZbLEsr004-Is8
 
 #special_code: '+998909741228 +998332002022'
 
