@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     /**
      * all identified users
      */
-    List<User> findAllByVerifiedTrue();
+    List<User> findAllByVerifiedTrueAndPaidFalse();
 
     /**
      * all paid users

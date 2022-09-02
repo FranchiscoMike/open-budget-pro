@@ -204,7 +204,7 @@ public class BotService {
         sendMessage.setChatId(currentUser.getChatId());
 
         if (text.equals(Const_Words.YES)) {
-            sendMessage.setText("Please share your phone_number");
+            sendMessage.setText("Iltimos quyidagi tugmani bosish orqali telefon raqamingizni yuboring");
 
             // reply
             ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -233,7 +233,8 @@ public class BotService {
             //delete from users :
             userRepository.deleteByBotUser_ChatId(currentUser.getChatId());
 
-            sendMessage.setText("Please choose one project for voting  ⤵️");
+            sendMessage.setText("Quyidagilardan bironta loyihani tanlang" +
+                    "  ⤵️");
 
             // projects : inline keyboard view :
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();

@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +44,7 @@ public class UserService {
         sendMessage.setChatId(user.getBotUser().getChatId());
         user.setCodeSent(true);
         userRepository.save(user);
-        sendMessage.setText("Send code please!");
+        sendMessage.setText("Qurilmangizga kod yuborildi shuni yuboring, iltimos!");
 
         openBudgetBot.execute(sendMessage);
 
@@ -56,7 +54,7 @@ public class UserService {
 
     public ApiResponse findAllVerifiedUsers() {
 
-        List<User> allByDoneTrueAndPaidFalse = userRepository.findAllByVerifiedTrue();
+        List<User> allByDoneTrueAndPaidFalse = userRepository.findAllByVerifiedTrueAndPaidFalse();
 
         return new ApiResponse(true, "all", allByDoneTrueAndPaidFalse);
     }
@@ -85,7 +83,7 @@ public class UserService {
         sendMessage.setChatId(user.getBotUser().getChatId());
         user.setVerified(true);
         userRepository.save(user);
-        sendMessage.setText("Your code is verified your account will be replenished shortly ");
+        sendMessage.setText("Sizning kodingiz tasidiqlandi nasib bo'lsa yaqinda hisobingiz to'liriladi ");
 
         openBudgetBot.execute(sendMessage);
 
@@ -103,9 +101,10 @@ public class UserService {
 
         sendMessage.setChatId(user.getBotUser().getChatId());
         user.setVerified(false);
+        user.setCode("Kod hali kelmagan");
         userRepository.save(user);
-        sendMessage.setText("Your code is not verified \n\n" +
-                "please resend your code!");
+        sendMessage.setText("Sizning kodingiz hali tasdiqlanmagan \n\n" +
+                "Iltimos kodni qaytadan jo'nating!");
 
         openBudgetBot.execute(sendMessage);
 
@@ -115,7 +114,7 @@ public class UserService {
     public ApiResponse code_not_received(String phone) {
         Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phone);
 
-        System.out.println("byPhoneNumber = " + byPhoneNumber);
+//        System.out.println("byPhoneNumber = " + byPhoneNumber);
 
         User user = byPhoneNumber.get();
 
@@ -124,7 +123,7 @@ public class UserService {
         sendMessage.setChatId(user.getBotUser().getChatId());
 
         userRepository.delete(user);  // user is deleted there
-        sendMessage.setText("You haven't sent code on time please try again /start");
+        sendMessage.setText("Siz kodni o'z vaqtida jo'nata olmadiz qaytadan  /start tugmasini bosing ");
 
         openBudgetBot.execute(sendMessage);
 
