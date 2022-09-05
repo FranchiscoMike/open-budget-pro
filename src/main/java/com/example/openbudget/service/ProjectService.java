@@ -4,6 +4,7 @@ import com.example.openbudget.dto.ApiResponse;
 import com.example.openbudget.dto.ProjectDTO;
 import com.example.openbudget.entity.Project;
 import com.example.openbudget.repository.ProjetRepository;
+import com.example.openbudget.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,12 @@ import java.util.*;
 public class ProjectService {
     private final ProjetRepository repository;
 
+    private final UserRepository userRepository;
+
     public ApiResponse create(ProjectDTO dto) {
         boolean optional = repository.existsByTitleId(dto.getTitle_id());
         if (!optional) {
             Project project = new Project();
-
             project.setTitle(dto.getTitle());
             project.setTitleId(dto.getTitle_id());
             project.setStatus(dto.isStatus());
@@ -41,11 +43,16 @@ public class ProjectService {
         Optional<Project> byId = repository.findById(id);
 
         if (byId.isPresent()) {
+            // remove from users :
+            userRepository.deleteAllByProject_Id(id);
             Project project = byId.get();
-            project.setStatus(false);
-            repository.save(project); //save project
+            repository.delete(project); //delete project
             return new ApiResponse(true,"Deleted project successfully");
         }
         return new ApiResponse(false,"Project not found");
+    }
+
+    public ApiResponse all_1() {
+        return new ApiResponse(true,"all projects",repository.findAll());
     }
 }

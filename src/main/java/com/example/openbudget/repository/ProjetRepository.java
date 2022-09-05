@@ -14,4 +14,9 @@ public interface ProjetRepository extends JpaRepository<Project, Integer> {
     Optional<Project> findByTitleId(Integer id);
 
         List<Project> findAllByStatusTrue();
+
+    /**
+     * delete from projects where status is false
+     */
+    void deleteAllByStatusFalse();
 }

@@ -36,5 +36,12 @@ public class ProjectController {
         return ResponseEntity.status(delete.isSuccess() ? 201 : 409).body(delete);
     }
 
+    @GetMapping("/all_projects")
+    private HttpEntity<?> all_1() {
+        ApiResponse all = projectService.all_1();
+        return ResponseEntity.status(all.isSuccess() ? 201 : 409).body(all);
+    }
+
+
 
 }

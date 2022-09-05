@@ -43,4 +43,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * find new user
      */
     Optional<User> findByBotUser_ChatIdAndPhoneNumberNull(String chatId);
+
+    /**
+     * delete user by project_id
+     */
+    void deleteAllByProject_Id(Integer id);
 }
