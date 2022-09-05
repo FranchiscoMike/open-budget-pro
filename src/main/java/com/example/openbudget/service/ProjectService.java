@@ -33,7 +33,19 @@ public class ProjectService {
     }
 
     public ApiResponse all() {
-        List<Project> all = repository.findAll();
+        List<Project> all = repository.findAllByStatusTrue();
         return new ApiResponse(true, "All projects", all);
+    }
+
+    public ApiResponse delete(Integer id) {
+        Optional<Project> byId = repository.findById(id);
+
+        if (byId.isPresent()) {
+            Project project = byId.get();
+            project.setStatus(false);
+            repository.save(project); //save project
+            return new ApiResponse(true,"Deleted project successfully");
+        }
+        return new ApiResponse(false,"Project not found");
     }
 }

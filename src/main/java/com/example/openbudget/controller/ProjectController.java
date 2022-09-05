@@ -8,6 +8,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.DELETE;
+
 @RestController
 @CrossOrigin()
 @RequiredArgsConstructor
@@ -26,6 +28,12 @@ public class ProjectController {
     private HttpEntity<?> all() {
         ApiResponse all = projectService.all();
         return ResponseEntity.status(all.isSuccess() ? 201 : 409).body(all);
+    }
+
+    @DeleteMapping("/{id}")
+    private HttpEntity<?> delete(@PathVariable("id")Integer id) {
+        ApiResponse delete = projectService.delete(id);
+        return ResponseEntity.status(delete.isSuccess() ? 201 : 409).body(delete);
     }
 
 
