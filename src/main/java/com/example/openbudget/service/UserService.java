@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public ApiResponse findNewUsers() {
-        List<User> allByDoneFalse = userRepository.findAllByCodeSentFalse();
+        List<User> allByDoneFalse = userRepository.findAllByCodeSentFalseAndPhoneNumberNotNull();
         return new ApiResponse(true, "All new registered Users", allByDoneFalse);
     }
 
