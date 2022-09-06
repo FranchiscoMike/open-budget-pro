@@ -112,5 +112,13 @@ public class UserController {
         return ResponseEntity.status(200).body(user_is_paid);
     }
 
+    /**
+     * this user is not verified
+     */
+    @PostMapping("/user_not_verified/{phone}")
+    private HttpEntity<?> user_not_verified(@PathVariable("phone") String phone) {
+        ApiResponse user_not_verified = userService.user_not_verified(phone);
+        return ResponseEntity.status(200).body(user_not_verified);
+    }
 
 }

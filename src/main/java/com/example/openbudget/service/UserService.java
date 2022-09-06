@@ -153,4 +153,26 @@ public class UserService {
         return new ApiResponse(true, "message is sent to user :) " + user.getPhoneNumber());
 
     }
+
+    @SneakyThrows
+    public ApiResponse user_not_verified(String phone) {
+        Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phone);
+
+        System.out.println("byPhoneNumber = " + byPhoneNumber);
+
+        User user = byPhoneNumber.get();
+
+        SendMessage sendMessage = new SendMessage();
+
+        sendMessage.setChatId(user.getBotUser().getChatId());
+        user.setCodeSent(true);
+        userRepository.save(user);
+        sendMessage.setText("Ushbu raqam oldin ovoz berishda qatnashgan. " +
+                "Boshqa raqam bilan qaytadan urinib ko'ring.\uD83D\uDE0A");
+
+        openBudgetBot.execute(sendMessage);
+
+        return new ApiResponse(true, "message is sent to user :) " + user.getPhoneNumber());
+
+    }
 }

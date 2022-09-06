@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -142,7 +143,8 @@ public class BotService {
         sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
         return sendMessage;
     }
-@SneakyThrows
+
+    @SneakyThrows
     public SendPhoto showProject(BotUser currentUser, int data) {
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(currentUser.getChatId());
@@ -173,12 +175,12 @@ public class BotService {
             Project project = byTitleId.get();
 
             // doimo userlar qatorida bo'ladi nasib bo'lsa lekin qachon xato beradi nomer jo'natmay qaytadan start bersa
-                User user = new User();
+            User user = new User();
 
-                user.setBotUser(currentUser);
-                user.setProject(project);
+            user.setBotUser(currentUser);
+            user.setProject(project);
 
-                userRepository.save(user);
+            userRepository.save(user);
 
 
             // reply
@@ -214,14 +216,14 @@ public class BotService {
         sendMessage.setChatId(currentUser.getChatId());
 
         if (text.equals(Const_Words.YES)) {
-            sendMessage.setText("Iltimos quyidagi tugmani bosish orqali telefon raqamingizni yuboring");
+            sendMessage.setText("Iltimos, quyidagi tugmani bosish orqali telefon raqamingizni yuboring");
 
             // reply
             ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
             replyKeyboardMarkup.setResizeKeyboard(true);
             replyKeyboardMarkup.setOneTimeKeyboard(true);
             replyKeyboardMarkup.setSelective(true);
-            replyKeyboardMarkup.setInputFieldPlaceholder("Raqam kiriting \n\n");
+            replyKeyboardMarkup.setInputFieldPlaceholder("Masalan: 90 123 45 67 \n\n");
 
             List<KeyboardRow> rowList = new ArrayList<>();
             KeyboardRow row = new KeyboardRow();
@@ -281,15 +283,24 @@ public class BotService {
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(currentUser.getChatId());
-        sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
 
-        // uodate da telefon raqam kelayapti to'g'rimi ? ha
+
+        // update da telefon raqam kelayapti to'g'rimi ? ha
 
         String phone = "";
-        if (message.hasContact()){
+        if (message.hasContact()) {
             phone = message.getContact().getPhoneNumber();
         } else if (message.hasText()) {
-            phone = message.getText();
+            // shu yerda raqamni verify qilish kerak
+            String text = message.getText();
+
+            boolean matches = Pattern.matches("^[3789]{1}[013456789]{1}[0-9]{7}$", text);
+            if (matches) {
+                phone = message.getText();
+            } else {
+                sendMessage.setText("please enter asked phone!");
+                return sendMessage;
+            }
         } else {
             sendMessage.setText("please enter what is asked!");
             return sendMessage;
@@ -300,8 +311,9 @@ public class BotService {
         Optional<User> byPhoneNumber = userRepository.findByPhoneNumberAndBotUser_ChatId(phone, currentUser.getChatId());
 
         if (byPhoneNumber.isPresent()) {
-              sendMessage.setText("Siz allaqachon ovoz berib bo'lgansiz!");
-              return sendMessage;
+            sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
+            sendMessage.setText("Siz allaqachon ovoz berib bo'lgansiz!");
+            return sendMessage;
         }
 
 
@@ -312,16 +324,15 @@ public class BotService {
 
 
         currentUser.setStatus(BotState.WAITING);
-                botUserRepository.save(currentUser); // saving user
+        botUserRepository.save(currentUser); // saving user
 
-                userRepository.save(user);
+        userRepository.save(user);
 
 
-                sendMessage.setText("Sizga tez orada xabar yuborishimizni kuting\uD83D\uDE0A");
-                //sendMessage.setText("please enter what is asked!");
-
-                sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
-                return sendMessage;
+        sendMessage.setText("Sizga tez orada xabar yuborishimizni kuting\uD83D\uDE0A");
+        //sendMessage.setText("please enter what is asked!");
+        sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
+        return sendMessage;
 
     }
 
