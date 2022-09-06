@@ -223,7 +223,7 @@ public class BotService {
             replyKeyboardMarkup.setResizeKeyboard(true);
             replyKeyboardMarkup.setOneTimeKeyboard(true);
             replyKeyboardMarkup.setSelective(true);
-            replyKeyboardMarkup.setInputFieldPlaceholder("Masalan: 90 123 45 67 \n\n");
+            replyKeyboardMarkup.setInputFieldPlaceholder("Masalan: 901234567 \n\n");
 
             List<KeyboardRow> rowList = new ArrayList<>();
             KeyboardRow row = new KeyboardRow();
