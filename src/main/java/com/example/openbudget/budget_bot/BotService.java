@@ -168,7 +168,6 @@ public class BotService {
             String info = "";
 
             info += ("Loyihaning nomi " + projectCha.getTitle() + "\n");
-            info += ("Loyihaning id si " + projectCha.getTitleId() + "\n");
             sendPhoto.setCaption(info + "\n\n" +
                     "Haqiqatdan ham siz ushbu loyihaga ovoz bermoqchimisiz?");
 
@@ -298,11 +297,11 @@ public class BotService {
             if (matches) {
                 phone = message.getText();
             } else {
-                sendMessage.setText("please enter asked phone!");
+                sendMessage.setText("Iltimos, namunadagidek raqam kiriting!");
                 return sendMessage;
             }
         } else {
-            sendMessage.setText("please enter what is asked!");
+            sendMessage.setText("Iltimos, sizdan so'ralgan narsani kiriting!");
             return sendMessage;
         }
 
