@@ -32,7 +32,7 @@ public class AdminService {
             Admin admin = byUsername.get();
 
             if (admin.getPassword().equals(dto.getPassword())) {
-                return new ApiResponse(true, "Successfully signed");
+                return new ApiResponse(true, "Successfully signed",admin);
             } else {
                 return new ApiResponse(false, "Some credentials don't match");
             }
