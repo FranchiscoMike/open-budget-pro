@@ -53,7 +53,7 @@ public class AdminController {
     }
 
     @PatchMapping("/{id}")
-    private HttpEntity<?> update(@PathVariable("id") Integer id,@RequestBody AdminDTO dto){
+    private HttpEntity<?> update(@PathVariable("id") Integer id,@RequestBody AdminDTO dto) throws Exception {
         ApiResponse update = service.update(id,dto);
         return ResponseEntity.status(update.isSuccess() ? 201 : 409).body(update);
     }

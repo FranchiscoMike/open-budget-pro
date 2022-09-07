@@ -57,12 +57,8 @@ public class AdminService {
         return new ApiResponse(true, "Successfully saved admin", save);
     }
 
-    public ApiResponse update(Integer id, AdminDTO dto) {
+    public ApiResponse update(Integer id, AdminDTO dto) throws Exception {
         Optional<Admin> byUsername = repository.findByUsername(dto.getUsername());
-
-        if (byUsername.isPresent()) {
-            return new ApiResponse(false, "Username should be unique!!!");
-        }
 
         Optional<Admin> byId = repository.findById(id);
         if (!byId.isPresent()) {
@@ -75,8 +71,13 @@ public class AdminService {
         admin.setUsername(dto.getUsername());
         admin.setPassword(dto.getPassword());
 
-        Admin save = repository.save(admin);
-        return new ApiResponse(true, "Successfully updated admin", save);
+        try {
+            Admin save = repository.save(admin);
+            return new ApiResponse(true, "Successfully updated admin", save);
+        } catch ( Exception e){
+            throw new Exception(e.getMessage());
+        }
+
     }
 
     @SneakyThrows
