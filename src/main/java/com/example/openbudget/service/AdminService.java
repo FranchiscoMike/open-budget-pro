@@ -5,6 +5,7 @@ import com.example.openbudget.dto.ApiResponse;
 import com.example.openbudget.entity.Admin;
 import com.example.openbudget.repository.AdminRepository;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class AdminService {
             Admin admin = byUsername.get();
 
             if (admin.getPassword().equals(dto.getPassword())) {
-                return new ApiResponse(true, "Successfully signed",admin);
+                return new ApiResponse(true, "Successfully signed", admin);
             } else {
                 return new ApiResponse(false, "Some credentials don't match");
             }
@@ -65,7 +66,7 @@ public class AdminService {
 
         Optional<Admin> byId = repository.findById(id);
         if (!byId.isPresent()) {
-            return new ApiResponse(false,"User not found");
+            return new ApiResponse(false, "User not found");
         }
 
 
@@ -76,5 +77,16 @@ public class AdminService {
 
         Admin save = repository.save(admin);
         return new ApiResponse(true, "Successfully updated admin", save);
+    }
+
+    @SneakyThrows
+    public ApiResponse delete(Integer id) {
+        Optional<Admin> byId = repository.findById(id);
+
+        if (byId.isPresent()) {
+            repository.deleteById(id);
+            return new ApiResponse(true, "delete admin success");
+        }
+        return new ApiResponse(false, "Admin not found");
     }
 }

@@ -58,5 +58,10 @@ public class AdminController {
         return ResponseEntity.status(update.isSuccess() ? 201 : 409).body(update);
     }
 
+    @DeleteMapping("/{id}")
+    private HttpEntity<?> delete(@PathVariable("id") Integer id){
+        ApiResponse delete = service.delete(id);
+        return ResponseEntity.status(delete.isSuccess() ? 201 : 404).body(delete);
+    }
 
 }
